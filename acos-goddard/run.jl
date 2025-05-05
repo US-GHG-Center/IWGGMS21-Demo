@@ -151,7 +151,7 @@ function julia_main() #::Cint
         @info "Reading in O2 spectroscopy ..."
         abscos["O2"] = RE.load_ABSCO_spectroscopy(
             # Pass the path to the ABSCO file
-            "./data/o2_v5.1_v180916+mlawer181031.hdf",
+            "./data/o2_v52.hdf",
             spectral_unit=:Wavelength
         )
         @info "... done!"
@@ -169,7 +169,7 @@ function julia_main() #::Cint
         @info "Reading in CO2 spectroscopy ..."
         abscos["CO2"] = RE.load_ABSCO_spectroscopy(
             # Pass the path to the ABSCO file
-            "./data/co2_v5.2_test.hdf",
+            "./data/co2_v52.hdf",
             spectral_unit=:Wavelength
         )
         @info "... done!"
@@ -191,7 +191,7 @@ function julia_main() #::Cint
         @info "Reading in H2O spectroscopy ..."
         abscos["H2O"] = RE.load_ABSCO_spectroscopy(
             # Pass the path to the ABSCO file
-            "./data/h2o_atm18+mtckd32.hdf",
+            "./data/h2o_v52.hdf",
             spectral_unit=:Wavelength
         )
         @info "... done!"
@@ -365,7 +365,7 @@ function julia_main() #::Cint
         =#
         @info "Adding ice cloud ..."
         miemom_ice = read_ACOS_aerosol(
-            "data/l2_aerosol_combined.h5",
+            "example_data/l2_aerosol_combined_slim.h5",
             "ice_cloud_MODIS6_deltaM_50",
             wavelength=true
         )
@@ -388,7 +388,7 @@ function julia_main() #::Cint
         =#
         @info "Adding water cloud ..."
         miemom_water = read_ACOS_aerosol(
-            "data/l2_aerosol_combined.h5",
+            "example_data/l2_aerosol_combined_slim.h5",
             "wc_008",
             wavelength=true
         )
@@ -411,7 +411,7 @@ function julia_main() #::Cint
         =#
         @info "Adding stratospheric aerosol ..."
         miemom_strat = read_ACOS_aerosol(
-            "data/l2_aerosol_combined.h5",
+            "example_data/l2_aerosol_combined_slim.h5",
             "strat",
             wavelength=true
             );
@@ -448,7 +448,7 @@ function julia_main() #::Cint
             @info "Reading aerosol properties for $(trop_types[idx])"
 
             this_trop_miemom = read_ACOS_aerosol(
-                "data/l2_aerosol_combined.h5",
+                "example_data/l2_aerosol_combined_slim.h5",
                 trop_types[idx],
                 wavelength=true
             )
@@ -692,30 +692,8 @@ function julia_main() #::Cint
         nus_dict=nus_dict,
         )
 
-    if args["max_iterations"] == 0
-
-        return buf, solver, fm_kwargs
-
-    end
-
-    results = Dict()
-    results[args["sounding_id"]] = collect_results(solver, buf)
-
-    @info "Opening $(args["output"]) for write access."
-    fid = h5open(args["output"], "w")
-    for (k,v) in results[args["sounding_id"]]
-        isnothing(v) && continue
-        @info "Writing out $(k)"
-        try
-            write(fid, k, v)
-        catch
-            @warn "Failed writing $(k)."
-        end
-    end
-    close(fid)
-    @info "Done."
-
     return buf, solver, fm_kwargs
+    
 end
 
 julia_main()

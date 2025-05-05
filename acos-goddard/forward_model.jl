@@ -147,7 +147,7 @@ function forward_model!(
         RE.calculate_radiances_and_jacobians!(buf.rt[swin])
 
         # Interpolate NUS points
-        @timeit to "NUS correction" if !isnothing(NUS)
+        if !isnothing(NUS)
             NUS_correction!(
                 buf.rt[swin],
                 swin,
@@ -160,22 +160,18 @@ function forward_model!(
         # Peform LSI correction if `high_options` are supplied.
        if !isnothing(high_options)
 
-            @timeit to "LSI correction" begin
+            # Create the method
+            lsi = RE.LSIRTMethod(
+                LSI_bounds[spec],
+                buf.rt[swin],
+                high_options
+            )
 
-                # Create the method
-                @timeit to "Create LSI" lsi = RE.LSIRTMethod(
-                    LSI_bounds[spec],
-                    buf.rt[swin],
-                    high_options
-                )
+            # Calculate binned properties, needed to do the binned RT runs.
+            RE.calculate_binned_properties!(lsi)
 
-                # Calculate binned properties, needed to do the binned RT runs.
-                @timeit to "Calculate binned properties" RE.calculate_binned_properties!(lsi)
-
-                # Run the binned RT calculations, and perform the correction itself.
-                @timeit to "Perform correction" RE.perform_LSI_correction!(lsi)
-
-            end
+            # Run the binned RT calculations, and perform the correction itself.
+            RE.perform_LSI_correction!(lsi)
 
         end
 

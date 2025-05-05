@@ -35,10 +35,6 @@ function parse_commandline()
             help = "Which spectrometers? Separated by comma: e.g. 1,2 or 1, or 1,2,3 (O2, weak CO2, strong CO2)"
             arg_type = String
             required = true
-        "--output"
-            help = "Output file name"
-            arg_type = String
-            required = true
         "--aerosols"
             help = "Whether to use aerosols or not (default = true)"
             arg_type = Bool
