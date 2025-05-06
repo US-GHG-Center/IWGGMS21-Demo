@@ -25,9 +25,7 @@ my_args = [
     "--dsigma_scale",
     "1.0",
     "--max_iterations",
-    "10",
-    "--output",
-    "2021030111564431.h5",
+    "10"
 ]
 
 empty!(ARGS)

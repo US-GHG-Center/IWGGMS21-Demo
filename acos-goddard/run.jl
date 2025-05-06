@@ -6,11 +6,8 @@ const RE = RetrievalToolbox
 
 
 using ArgParse
-#using CSV
-#using DataFrames
 using Dates
 using DocStringExtensions
-using Glob
 using HDF5
 using Interpolations
 using LinearAlgebra
@@ -20,9 +17,7 @@ using Printf
 using ProgressMeter
 using Statistics
 using StatsBase
-using UnicodePlots
 using Unitful
-using TimerOutputs
 
 
 # Functions to read in data
@@ -279,7 +274,7 @@ function julia_main() #::Cint
     end
 
 
-    h5_oco_static = h5open("./data/l2_oco_static_input.h5", "r")
+    h5_oco_static = h5open("./example_data/l2_oco_static_input.h5", "r")
 
     #=
         Non-uniform sampling (NUS) grid
@@ -688,7 +683,7 @@ function julia_main() #::Cint
         gamma=args["gamma"],
         dsigma_scale=args["dsigma_scale"],
         co2_cov=CO2_covar,
-        high_options=high_options,
+        high_options=nothing, #high_options,
         nus_dict=nus_dict,
         )
 
