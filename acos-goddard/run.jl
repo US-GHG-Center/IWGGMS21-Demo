@@ -662,11 +662,15 @@ function julia_main() #::Cint
         push!(hmo3["options"], "n_t_tms")
     end
 
-    high_options = [
-        hmo1,
-        hmo2,
-        hmo3
-    ]
+    if (args["LSI"])
+        high_options = [
+            hmo1,
+            hmo2,
+            hmo3
+        ]
+    else
+        high_options = nothing
+    end
 
     #=
         Process the scene
@@ -683,7 +687,7 @@ function julia_main() #::Cint
         gamma=args["gamma"],
         dsigma_scale=args["dsigma_scale"],
         co2_cov=CO2_covar,
-        high_options=nothing, #high_options,
+        high_options=high_options,
         nus_dict=nus_dict,
         )
 

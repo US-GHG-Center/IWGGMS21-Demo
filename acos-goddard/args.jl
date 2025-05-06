@@ -40,6 +40,11 @@ function parse_commandline()
             arg_type = Bool
             required = false
             default = true
+        "--LSI"
+            help = "Whether to use LSI or not (default = true)"
+            arg_type = Bool
+            required = false
+            default = true
         "--max_iterations"
             help = "Number of allowed iterations before the inversions are halted (default = 10)."
             arg_type = Int
