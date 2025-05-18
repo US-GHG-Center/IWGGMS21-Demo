@@ -159,16 +159,13 @@ function forward_model!(
 
         # Peform LSI correction if `high_options` are supplied.
        if !isnothing(high_options)
-
+            @info "(LSI correction ... )"
             # Create the method
             lsi = RE.LSIRTMethod(
                 LSI_bounds[spec],
                 buf.rt[swin],
                 high_options
             )
-
-            # Calculate binned properties, needed to do the binned RT runs.
-            RE.calculate_binned_properties!(lsi)
 
             # Run the binned RT calculations, and perform the correction itself.
             RE.perform_LSI_correction!(lsi)

@@ -13,7 +13,7 @@ my_args = [
     "--spec",
     "1,2,3",
     "--aerosols",
-    "true",
+    "false",
     "--o2_scale",
     "1.0048",
     "--co2_scale_weak",
@@ -23,7 +23,7 @@ my_args = [
     "--gamma",
     "1000.0",
     "--dsigma_scale",
-    "1.0",
+    "5.0",
     "--max_iterations",
     "10"
 ]
