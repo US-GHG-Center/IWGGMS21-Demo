@@ -69,12 +69,12 @@ RUN <<EOT
     chown --recursive ${NB_UID}:${NB_GID} xrtm
 EOT
 
-# Add the demo notebook into /opt/IWGGMS21-Demo
-RUN git clone --depth 1 https://github.com/US-GHG-Center/IWGGMS21-Demo /opt/IWGGMS21-Demo && mkdir /opt/IWGGMS21-Demo/data && chown -R ${NB_USER} /opt/IWGGMS21-Demo
-
-
 USER ${NB_USER}
 WORKDIR ${HOME}
+
+# Add the demo notebook into ${HOME}/IWGGMS21-Demo
+RUN git clone --depth 1 https://github.com/US-GHG-Center/IWGGMS21-Demo && mkdir ${HOME}/IWGGMS21-Demo/data
+
 
 # Install Julia Packages
 RUN <<EOT
