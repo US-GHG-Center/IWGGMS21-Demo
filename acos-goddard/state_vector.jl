@@ -22,13 +22,13 @@ function create_statevector(
     sv = RE.AbstractStateVectorElement[]
 
     @info "Creating the state vector!"
-    @info "..."
+    #@info "..."
 
     # .. now populate depending on the choice of spectrometers
 
     # Retrieve surface pressure only if O2 A-band is present!
     if 1 in specs
-        @info "Retrieving surface pressure."
+        #@info "Retrieving surface pressure."
 
         sve_psurf = RE.SurfacePressureSVE(
             u"hPa", # Choose a unit here, we can make this any pressure unit
@@ -46,7 +46,7 @@ function create_statevector(
     for atm in atm_elements
         if atm isa RE.GaussAerosol
 
-            @info "Retrieving log-AOD for $(atm)."
+            #@info "Retrieving log-AOD for $(atm)."
             sve_aod = RE.AerosolOpticalDepthSVE(
                 atm, # reference to the aerosol object itself
                 true, # Log-scale?
@@ -58,7 +58,7 @@ function create_statevector(
 
             push!(sv, sve_aod)
 
-            @info "Retrieving fractional height for $(atm)."
+            #@info "Retrieving fractional height for $(atm)."
             sve_height = RE.AerosolHeightSVE(
                 atm, # reference to the aerosol object itself
                 false, # Log-scale?
@@ -70,7 +70,7 @@ function create_statevector(
 
             push!(sv, sve_height)
 
-            @info "Retrieving fractional width for $(atm)"
+            #@info "Retrieving fractional width for $(atm)"
             sve_width = RE.AerosolWidthSVE(
                 atm, # reference to the aerosol object itself
                 false, # Log-scale?
@@ -87,7 +87,7 @@ function create_statevector(
 
 
     # T offset will stay the same, this one is easy
-    @info "Retrieving T profile offset."
+    #@info "Retrieving T profile offset."
     sve_T_offset = RE.TemperatureOffsetSVE(
         u"K",
         0.0, # First guess
@@ -100,7 +100,7 @@ function create_statevector(
     # Gas scale retrieval for H2O if spectrometers 2 or 3 are involved
     if (2 in specs) | (3 in specs)
 
-        @info "Retrieving H2O VMR scale factor."
+        #@info "Retrieving H2O VMR scale factor."
         # Grab the H2O gas object
         gas_h2o = filter(x -> x isa RE.GasAbsorber && x.gas_name == "H2O", atm_elements)[1]
 
@@ -122,7 +122,7 @@ function create_statevector(
     # CO2 VMR profile retrieval if spectrometers 2 or 3 are involved
     if (2 in specs) | (3 in specs)
 
-        @info "Retrieving CO2 VMR profile."
+        #@info "Retrieving CO2 VMR profile."
         # Grab the H2O gas object
         gas_co2 = filter(x -> x isa RE.GasAbsorber && x.gas_name == "CO2", atm_elements)[1]
 
@@ -182,7 +182,7 @@ function create_statevector(
             #    continue
             #end
 
-            @info "Retrieving BRDF polynomial order $(o) for band $(spec_idx)."
+            #@info "Retrieving BRDF polynomial order $(o) for band $(spec_idx)."
             sve_brdf = RE.BRDFPolynomialSVE(
                 swins[spec_idx],
                 RE.LambertianPolynomialKernel,
@@ -200,7 +200,7 @@ function create_statevector(
         # Add up to linear dispersion polynomials
         for o in [0,1]
 
-            @info "Retrieving dispersion polynomial order $(o) for band $(spec_idx)."
+            #@info "Retrieving dispersion polynomial order $(o) for band $(spec_idx)."
             sve_dispersion = RE.DispersionPolynomialSVE(
                 disps[spec_idx],
                 o, # Polynomial order

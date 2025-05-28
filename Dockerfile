@@ -7,7 +7,7 @@ ENV XRTM_PATH=/opt/xrtm
 # NOTEBOOK_ARGS set to this path will cause the Jupyter Lab environment 
 # to start in this folder, so users will see only this Notebook and thus
 # know which one to use.
-ENV NOTEBOOK_ARGS=/opt/IWGGMS21-Demo/IWGGMS-demonstration.ipynb
+ENV NOTEBOOK_ARGS=${HOME}/IWGGMS21-Demo
 
 USER ${NB_USER}
 WORKDIR ${HOME}
@@ -74,7 +74,6 @@ WORKDIR ${HOME}
 
 # Add the demo notebook into ${HOME}/IWGGMS21-Demo
 RUN git clone --depth 1 https://github.com/US-GHG-Center/IWGGMS21-Demo && mkdir ${HOME}/IWGGMS21-Demo/data
-
 
 # Install Julia Packages
 RUN <<EOT
