@@ -107,6 +107,11 @@ RUN <<EOT
     '
 EOT
 
+# Finalizing and Cleanup stage
+WORKDIR ${HOME}/IWGGMS21-Demo
+
 # Run the precompile/build within Jupyter (somehow that is necessary)
-COPY precompile_build.ipynb ./
-RUN jupyter execute precompile_build.ipynb && rm precompile_build.ipynb
+RUN <<EOT
+    jupyter execute precompile_build.ipynb && rm precompile_build.ipynb
+    rm make_xrtm.patch environment.yml make_xrtm.patch
+EOT
