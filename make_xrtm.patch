@@ -1,0 +1,18 @@
+--- xrtm/make.inc.example       2025-05-06 13:37:58.926801906 +0000
++++ xrtm/make.inc       2025-05-06 13:42:44.744015569 +0000
+@@ -57,7 +57,7 @@
+ else
+ 
+     # LAPACK
+-    LINKS        += $(HOME)/opt/lapack/liblapack.a
++    #LINKS        += $(HOME)/opt/lapack/liblapack.a
+ 
+     # BLAS
+ 
+@@ -65,7 +65,7 @@
+     #LINKS        += ${HOME}/opt/lapack/libblas.a
+ 
+     # OpenBLAS
+-    LINKS        += ${HOME}/opt/openblas/lib/libopenblas.a
++    LINKS        += /opt/conda/lib/libopenblas.so.0
+ endif

@@ -1,0 +1,11 @@
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - binutils
+  - flex
+  - gfortran
+  - gxx
+  - libopenblas
+  - make
+  - patch
