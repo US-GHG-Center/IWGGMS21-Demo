@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM quay.io/jupyter/julia-notebook:2025-05-12
 
-ENV JULIA_NUM_THREADS=3
+ENV JULIA_NUM_THREADS=1
 ENV OMP_NUM_THREADS=1
 ENV XRTM_PATH=/opt/xrtm
 # NOTEBOOK_ARGS set to this path will cause the Jupyter Lab environment 
@@ -110,9 +110,12 @@ EOT
 # Finalizing and Cleanup stage
 WORKDIR ${HOME}/IWGGMS21-Demo
 
+# Deactivate "download" button
+RUN jupyter-labextension disable @jupyterlab/docmanager-extension:download && jupyter-labextension disable @jupyterlab/filebrowser-extension:download && jupyter-labextension lock
+
 RUN <<EOT
     # Run the precompile/build within Jupyter (somehow that is necessary)
     jupyter execute precompile_build.ipynb
     # Remove files we do not need anymore..
-    rm make_xrtm.patch environment.yml precompile_build.ipynb
+    rm make_xrtm.patch environment.yml precompile_build.ipynb Dockerfile
 EOT

@@ -13,6 +13,8 @@ my_args = [
     "--spec",
     "1,2,3",
     "--aerosols",
+    "true",
+    "--LSI",
     "false",
     "--o2_scale",
     "1.0048",

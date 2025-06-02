@@ -83,7 +83,7 @@ function OCO_read_inputs_from_l1b_and_met(
     observer_dict = RE.OCO_pull_observer(l1b_h5)
 
     if !isnothing(cpr_h5)
-        @info "Pulling CO2 priors from $(l2cpr_fname)"
+        #@info"Pulling CO2 priors from $(l2cpr_fname)"
         co2_prior_dict = RE.OCO_pull_CO2_prior(cpr_h5)
     end
 
@@ -106,7 +106,7 @@ function OCO_read_inputs_from_l1b_and_met(
     disp_coef_dict = Dict() # footprint -> dispersion coeffs
     snr_coef_dict = Dict() # footprint -> per-wl SNR coefficient arrays
 
-    @info "Reading ISRF and dispersion tables"
+    #@info"Reading ISRF and dispersion tables"
     for fp in 1:N_fp
 
         isrf_table_dict[fp] = RE.TableISRF(
@@ -120,9 +120,9 @@ function OCO_read_inputs_from_l1b_and_met(
 
     end
 
-    @info "Reading retrieval inputs"
+    #@info"Reading retrieval inputs"
 
-    @info "Loading measurement arrays."
+    #@info"Loading measurement arrays."
     band_name = RE.OCO_band_index_to_string(band_idx)
     meas_full_array = l1b_h5["/SoundingMeasurements/radiance_$(band_name)"][:,:,:]
 
@@ -139,13 +139,13 @@ function OCO_read_inputs_from_l1b_and_met(
     solar_distance = l1b_h5["/SoundingGeometry/sounding_solar_distance"][:,:] * u"m"
     sounding_qual = l1b_h5["/SoundingGeometry/sounding_qual_flag"][:,:]
 
-    @info "Loading bad samples and spike flags."
+    #@info"Loading bad samples and spike flags."
     bad_samples = l1b_h5["/InstrumentHeader/bad_sample_list"][:,:, band_idx]
     spike_eof = l1b_h5["/SpikeEOF/spike_eof_weighted_residual_$(band_name)"][:,:,:]
 
-    @info "Done."
+    #@info"Done."
 
-    @info "Packing into Dicts."
+    #@info"Packing into Dicts."
     for snid in sounding_id_list
 
         footprint_idx, frame_idx = fp_frame_idx_dict[snid]
@@ -161,7 +161,7 @@ function OCO_read_inputs_from_l1b_and_met(
 
     end
 
-    @info "Closing L1B and L2Met files."
+    #@info"Closing L1B and L2Met files."
     close(l1b_h5)
     close(met_h5)
     if !isnothing(cpr_h5)
