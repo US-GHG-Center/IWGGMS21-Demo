@@ -33,10 +33,6 @@ include("NUS.jl")
 # Routines to process the results
 include("collect_results.jl")
 
-logger = ConsoleLogger(stderr, Logging.Info);
-global_logger(logger);
-
-
 #=
     Global variables
 =#
@@ -536,8 +532,14 @@ function julia_main() #::Cint
         u"ph/s/m^2/sr/µm", # Radiance units for the forward model, this must be in the same units as the L1B data..
     )
 
-    # Will contain everything needed to run a retrieval
 
+    if args["polarized"]
+        rad_type = RE.VectorRadiance
+    else
+        rad_type = RE.ScalarRadiance
+    end
+
+    # Will contain everything needed to run a retrieval
     buf = RE.EarthAtmosphereBuffer(
         state_vector, # The state vector
         [spectral_windows[i] for i in spec_array], # The spectral window (or a list of them)
@@ -546,7 +548,7 @@ function julia_main() #::Cint
         atm_elements, # Atmospheric elements
         Dict(spectral_windows[i] => solar_models[i] for i in spec_array), # The solar model(s),
         [:XRTM for i in spec_array], # RT model
-        RE.VectorRadiance, # We use VectorRadiance here because we want to do the calculations with full Stokes!
+        rad_type, # We use VectorRadiance here because we want to do the calculations with full Stokes!
         rt_buf, # The pre-allocated RT buffer
         inst_buf, # The pre-allocated instrument buffer
         N_RT_lev, # The number of retrieval or RT pressure levels
@@ -557,7 +559,7 @@ function julia_main() #::Cint
     @info "... done!"
 
 
-    # Setting the RT options
+     # Setting the RT options
 
     # Grab the number of high streams from ARGS
     Nhigh = 16
@@ -575,10 +577,14 @@ function julia_main() #::Cint
         "output_at_levels",
         "calc_derivs",
         "source_solar",
-        "vector",
         "psa",
-        "sfi",
+        "sfi"
         ]
+
+    # Make SS contributions polarized if needed
+    if args["polarized"]
+        push!(mo1["options"], "vector")
+    end
 
     if args["aerosols"]
         push!(mo1["options"], "delta_m")
@@ -615,22 +621,26 @@ function julia_main() #::Cint
     =#
 
     hmo1 = Dict()
-    hmo1["solvers"] = ["single"]
+    hmo1["solvers"] = ["single", "two_os"]
     hmo1["add"] = true
     hmo1["streams"] = Nhigh
     hmo1["options"] = [
         "output_at_levels",
         "calc_derivs",
         "source_solar",
-        "vector",
         "psa",
         "sfi",
         ]
 
-    if args["aerosols"]
-        push!(hmo1["options"], "delta_m")
-        push!(hmo1["options"], "n_t_tms")
+    # Make SS contributions polarized if needed
+    if args["polarized"]
+        push!(hmo1["options"], "vector")
     end
+
+    #if args["aerosols"]
+    #    push!(hmo1["options"], "delta_m")
+    #    push!(hmo1["options"], "n_t_tms")
+    #end
 
     hmo2 = Dict()
     hmo2["solvers"] = ["two_os"]
@@ -662,14 +672,21 @@ function julia_main() #::Cint
         push!(hmo3["options"], "n_t_tms")
     end
 
-    if (args["LSI"])
-        high_options = [
-            hmo1,
-            hmo2,
-            hmo3
-        ]
+    if args["LSI"]
+
+        if args["polarized"]
+            # Use SS (vector), 2OS (vector) and EIG_BVP (scalar) for polarized run
+            high_options = [hmo1, hmo3]
+        else
+            # Use SS (scalar) and EIG_BVP (scalar) for scalar run
+            high_options = [hmo1, hmo3]
+        end
+
     else
-        high_options = nothing
+
+        # No LSI, set this to `nothing`
+        high_options=nothing
+
     end
 
     #=
@@ -692,7 +709,7 @@ function julia_main() #::Cint
         )
 
     return buf, solver, fm_kwargs
-    
+
 end
 
 julia_main()

@@ -46,23 +46,24 @@ function forward_model!(
     for (idx, sve) in RE.StateVectorIterator(SV, RE.SurfacePressureSVE)
 
         # Create new pressure grid!
+        #=
         new_psurf = RE.get_current_value(sve)
         @views buf.scene.atmosphere.pressure_levels[:] = ustrip.(
             Ref(buf.scene.atmosphere.pressure_unit),
             RE.create_ACOS_pressure_grid(new_psurf * sve.unit)
             )
-
+        =#
 
         # Shift lowest pressure level according to the psurf SVE
         # (and account for units)
-        #=
+
         new_psurf = ustrip(
             buf.scene.atmosphere.pressure_unit,
             RE.get_current_value_with_unit(sve)
             )
 
         buf.scene.atmosphere.pressure_levels[end] = new_psurf
-        =#
+
         # .. and calculate the mid-layer values that need to be
         # inserted into the atmosphere object.
         @views buf.scene.atmosphere.pressure_layers[:] =
@@ -159,17 +160,18 @@ function forward_model!(
 
         # Peform LSI correction if `high_options` are supplied.
        if !isnothing(high_options)
-            @info "(LSI correction ... )"
-            # Create the method
-            lsi = RE.LSIRTMethod(
-                LSI_bounds[spec],
-                buf.rt[swin],
-                high_options
-            )
+                @info "(LSI correction)"
 
-            # Run the binned RT calculations, and perform the correction itself.
-            RE.perform_LSI_correction!(lsi)
+                # Create the method
+                lsi = RE.LSIRTMethod(
+                    LSI_bounds[spec],
+                    buf.rt[swin],
+                    high_options
+                )
 
+                # Run the binned RT calculations, and perform the correction itself.
+                t_lsi = @timed RE.perform_LSI_correction!(lsi)
+                @info @sprintf "LSI took %.1f seconds." t_lsi.time
         end
 
     end

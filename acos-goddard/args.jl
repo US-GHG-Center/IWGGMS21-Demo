@@ -40,6 +40,21 @@ function parse_commandline()
             arg_type = Bool
             required = false
             default = true
+        "--retrieve_aerosols"
+            help = "Whether to retrieve aerosols or not (default = true)"
+            arg_type = Bool
+            required = false
+            default = true
+        "--retrieve_psurf"
+            help = "Whether to retrieve surface pressure or not (default = true)"
+            arg_type = Bool
+            required = false
+            default = true
+        "--polarized"
+            help = "Whether to use polarized RT or not (default = true)"
+            arg_type = Bool
+            required = false
+            default = true
         "--LSI"
             help = "Whether to use LSI or not (default = true)"
             arg_type = Bool

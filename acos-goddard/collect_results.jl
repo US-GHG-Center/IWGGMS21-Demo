@@ -5,6 +5,11 @@ function collect_results(
 
     # Calculate OE stuff
     q = RE.calculate_OE_quantities(s)
+
+    if isnothing(q)
+        return nothing
+    end
+
     h = RE.create_pressure_weights(buf.scene.atmosphere)
 
     # Result dictionary

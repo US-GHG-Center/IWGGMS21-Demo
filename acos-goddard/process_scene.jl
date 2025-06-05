@@ -500,10 +500,20 @@ function process_snid(
         end
 
         chi2 = RE.calculate_chi2(solver)
+        all_chi2_small = true
         for (k,v) in chi2
             @info "$(k): χ² =  $(v)"
+            if (v > 20)
+                all_chi2_small = false
+            end
         end
 
+        # Manually push gamma to 1000 when we get closer to the solution for better
+        # convergence
+        if (all_chi2_small)
+            solver.gamma = 1000
+            @info "Setting LM-γ to $(solver.gamma)"
+        end
     end
     @debug "Iterations done."
 
