@@ -94,6 +94,7 @@ RUN <<EOT
                 "Logging",
                 "LoopVectorization",
                 "Plots",
+                "PrettyTables",
                 "Printf",
                 "ProgressMeter",
                 "Statistics",
